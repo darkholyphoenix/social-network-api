@@ -1,12 +1,28 @@
-const { Schema, model } = require('mongoose');
-const dateFormat = require('../utils/dateFormat');
+const { Schema, Types, model } = require('mongoose');
+const dateFormat = require('../routes/utils/dateFormat');
 
 const ReactionsSchema = new Schema (
     {
-        reactionId:{ type: Schema.Types.ObjectId, default: new ObjectId},
-        reactionBody: {type: String, required: true, max: 280 },
-        username: {type: String, required: true },
-        createdAt: {type: Date, default: Date.now, get: createdAtVal => dateFormat(createdAtVal)}
+        reactionId:{ 
+          type: Schema.Types.ObjectId,
+          default: () => new Types.ObjectId(),
+          },
+
+        reactionBody: {
+          type: String, 
+          required: true, 
+          max: 280 
+        },
+
+        username: {type: String, 
+          required: true 
+        },
+
+        createdAt: {
+          type: Date, 
+          default: Date.now, 
+          get: createdAtVal => dateFormat(createdAtVal)
+        }
     }
 );
 
@@ -45,10 +61,7 @@ const ThoughtSchema = new Schema(
 
 // get total count of comments and replies on retrieval
 ThoughtSchema.virtual('reactionCount').get(function() {
-  return this.reactions.reduce(
-    (total, thought) => total + thought.reactions.length + 1,
-    0
-  );
+  return this.reactions.length;
 });
 
 const Thought = model('Thought', ThoughtSchema);

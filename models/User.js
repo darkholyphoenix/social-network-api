@@ -1,6 +1,6 @@
 const { Schema, model } = require('mongoose');
 const validateEmail = function(email) {
-    var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    var re = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
     return re.test(email)
 };
 
@@ -18,7 +18,7 @@ const UserSchema = new Schema(
         required: true,
         unique: true,
         validate: [validateEmail, 'Please fill a valid email address'],
-        match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
+        match: [/^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/]
 
       },
       thoughts: [
@@ -47,7 +47,7 @@ const User = model('User', UserSchema);
 
 // get total count of comments and replies on retrieval
 UserSchema.virtual('friendCount').get(function() {
-    return this.friends.reduce((total, user) => total + user.friends.length + 1, 0 );
+    return this.friends.length;
   });
 
 module.exports = User;
